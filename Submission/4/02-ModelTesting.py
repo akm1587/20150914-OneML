@@ -68,3 +68,19 @@ print(estimatedError)
 
 
 
+
+
+#SimpleModel
+clf = RandomForestClassifier(n_estimators=1000, n_jobs=-1)
+clf = clf.fit(X, Y)
+
+result=clf.predict(Xtest)
+
+#convert response back to original format
+RESULT=np.array(map(splitResult, result.tolist()))    
+#add SRId column
+RESULT=np.column_stack((np.array(TestData.SRId), RESULT))
+#add column name
+RESULT=np.row_stack((np.array(["SRId", "CST_1_Pred", "CST_2_Pred"]), RESULT))
+
+np.savetxt("C:/Users/vichan/Desktop/RESULT0.txt", RESULT, fmt='%s', delimiter='\t')

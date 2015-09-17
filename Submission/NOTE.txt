@@ -1,12 +1,15 @@
-Submission 1:
+Submission 1: 60% evaluation
 Initial Submission
 bag of word, rf 500 trees
 
-Submission 2:
+Submission 2: 60% evaluation, lower than submission1
 Add end-word and used both 1 and 2-gram to Submission 1
 bag of word, rf 500 trees
 
-Submission 3:
+Submission 3: 61.05% on 5 fold CV
 Added stemming in step00
 Used tfidf instead of count, and with end-word and used both uni-gram like Submission 1
 bag of word, rf 500 trees
+
+Submission 4: 61.82%
+change vocabulary of all the IST to that from CST_1 and CST_2 using also tfidf

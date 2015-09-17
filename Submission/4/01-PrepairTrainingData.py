@@ -20,35 +20,6 @@ result=list()
 
 countMatrix=TfidfVectorizer(analyzer='word', stop_words='english') #ignore word only shown up once ever
 #should try stemming Y (or standardize word such as app, application, apps, etc) first!!
-#all of these are equivalent to sing in
-TrainData.Y=TrainData.Y.str.replace("sign-in", "signin")
-TrainData.Y=TrainData.Y.str.replace("sign in", "signin")
-TrainData.Y=TrainData.Y.str.replace("sign-on", "signin")
-TrainData.Y=TrainData.Y.str.replace("signon", "signin")
-TrainData.Y=TrainData.Y.str.replace("sign on", "signin")
-#repalce punctional, speicla characters with space
-#only keep a to z and 0 to 9, replace all others with space
-TrainData.Y=TrainData.Y.str.replace("[^a-z0-9]", " ")
-#replace multiple spaces with one space
-TrainData.Y=TrainData.Y.str.replace(" +", " ")
-
-TrainData.Y=TrainData.Y.str.replace("app", "applications")
-TrainData.Y=TrainData.Y.str.replace("apps", "applications")
-TrainData.Y=TrainData.Y.str.replace("mgmt", "applications")
-
-
-
-
-def tempfn(x):
-    #some observation is empty.  This lead to problem in the fit.  So I fill in None for the empty
-    if(isinstance(x, str)==False):
-        if(np.isnan(x)):
-            x="none"
-    temp=x.split(' ')
-    result=map(stem, temp)
-    return(' '.join(result))
-
-TrainData.Y=map(tempfn, TrainData.Y.tolist(TrainData.Y))
 responseDecoder=countMatrix.fit(TrainData.Y)
 
 for col in varToClean:
