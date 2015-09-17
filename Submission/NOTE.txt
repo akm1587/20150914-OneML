@@ -1,0 +1,12 @@
+Submission 1:
+Initial Submission
+bag of word, rf 500 trees
+
+Submission 2:
+Add end-word and used both 1 and 2-gram to Submission 1
+bag of word, rf 500 trees
+
+Submission 3:
+Added stemming in step00
+Used tfidf instead of count, and with end-word and used both uni-gram like Submission 1
+bag of word, rf 500 trees
