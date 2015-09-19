@@ -1,7 +1,7 @@
 import pickle
 import numpy as np
 import pandas as pd
-
+import scipy as sp
 
 def bowConverter(decoder, data):
     temp=data.tolist()
@@ -39,23 +39,31 @@ for i in range(0, len(varToClean)):
 from scipy.sparse import hstack
 X=hstack(resultTrain).toarray()
 Xtest=hstack(resultTest).toarray()
-Y=TrainData.Y
+CST_1=TrainData.CST_1
+CST_2=TrainData.CST_2
 
-nfold=5
-from sklearn.ensemble import RandomForestClassifier
+nfold=3
+import sys
+sys.path.insert(0, '/Users/vc/Dropbox/Documents/Microsoft/20150914-OneML')
+import hierarchicalModel as myfunc
 from sklearn.cross_validation import StratifiedKFold
 estimatedError=list()
 skf = StratifiedKFold(TrainData.Y, nfold)
 for train, test in skf:
     trainX=X[train,:]
-    trainY=Y[train]
+    trainCST_1=CST_1[train]
+    trainCST_2=CST_2[train]
     testX=X[test,:]
-    testY=Y[test]
-
+    testY=TrainData.Y[test]
+    
+    print(sp.stats.itemfreq(TrainData.Y[train]))
+    print(sp.stats.itemfreq(trainCST_2))
     #fit model
-    clf = RandomForestClassifier(n_estimators=500, n_jobs=7)
-    clf = clf.fit(trainX, trainY)
-    predictedY=clf.predict(testX)
+    clf = myfunc.hierarchicalModel()
+    clf.fit(trainX, trainCST_1, trainCST_2)
+    predictedY0 = clf.predict(testX)
+    print(predictedY0)
+    predictedY = predictedY0[0]+"::$!^!$::"+predictedY0[1]
     
     #test model
     error=np.mean(testY==predictedY)*100

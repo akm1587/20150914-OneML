@@ -1,15 +1,24 @@
-Submission 1: 60% evaluation
+Attempt 1: 60.2986% evaluation
 Initial Submission
 bag of word, rf 500 trees
 
-Submission 2: 60% evaluation, lower than submission1
+Attempt 2: 60.2599% evaluation, lower than submission1
 Add end-word and used both 1 and 2-gram to Submission 1
 bag of word, rf 500 trees
 
-Submission 3: 61.05% on 5 fold CV
+Attempt 3: 61.05% on 5 fold CV
 Added stemming in step00
 Used tfidf instead of count, and with end-word and used both uni-gram like Submission 1
 bag of word, rf 500 trees
 
-Submission 4: 61.82%
-change vocabulary of all the IST to that from CST_1 and CST_2 using also tfidf
+Attempt 4: 62.33228% evaluation, 61.82% on 5 fold CV
+change vocabulary of all the IST to that from CST_1 and CST_2 using also tfidf, and 1000 trees in RF
+
+Attempt 5: 59.923% on 5 fold CV
+Same as 4 but clean up and stem CST_1 and CST_2 before building vocabulary, this vocabulary is used for the ISTs
+
+Attempt 6: 60.93% on 5 fold CV
+Same as 4 but in addition use vacabulary from CSTs to build additional tfidf for each covariates. 
+
+Attempt 7: 60.93% on 5 fold CV
+Same as 4 but with default logistic regression with l2 regularization tuned. 

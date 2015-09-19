@@ -3,8 +3,8 @@ from stemming.porter2 import stem
 import numpy as np
 param1='Train'
 #param1='Test'
-filepath="/Users/vc/Dropbox/Documents/Microsoft/20150914-OneML/Information/"
-#filepath="C:/Users/vichan/Dropbox/Documents/Microsoft/20150914-OneML/Information/"
+#filepath="/Users/vc/Dropbox/Documents/Microsoft/20150914-OneML/Information/"
+filepath="C:/Users/vichan/Dropbox/Documents/Microsoft/20150914-OneML/Information/"
 
 
 ############################################

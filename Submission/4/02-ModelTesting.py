@@ -17,8 +17,8 @@ def splitResult(x):
 
 
 
-filepath="/Users/vc/Dropbox/Documents/Microsoft/20150914-OneML/Information/"
-#filepath="C:/Users/vichan/Dropbox/Documents/Microsoft/20150914-OneML/Information/"
+#filepath="/Users/vc/Dropbox/Documents/Microsoft/20150914-OneML/Information/"
+filepath="C:/Users/vichan/Dropbox/Documents/Microsoft/20150914-OneML/Information/"
 TrainData=pd.read_csv(filepath+"cleanedTrain.csv")
 TestData=pd.read_csv(filepath+"cleanedTest.csv")
 
@@ -53,7 +53,7 @@ for train, test in skf:
     testY=Y[test]
 
     #fit model
-    clf = RandomForestClassifier(n_estimators=500, n_jobs=7)
+    clf = RandomForestClassifier(n_estimators=500, n_jobs=-1)
     clf = clf.fit(trainX, trainY)
     predictedY=clf.predict(testX)
     

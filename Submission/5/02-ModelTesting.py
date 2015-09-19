@@ -17,13 +17,13 @@ def splitResult(x):
 
 
 
-filepath="/Users/vc/Dropbox/Documents/Microsoft/20150914-OneML/Information/"
-#filepath="C:/Users/vichan/Dropbox/Documents/Microsoft/20150914-OneML/Information/"
+#filepath="/Users/vc/Dropbox/Documents/Microsoft/20150914-OneML/Information/"
+filepath="C:/Users/vichan/Dropbox/Documents/Microsoft/20150914-OneML/Information/"
 TrainData=pd.read_csv(filepath+"cleanedTrain.csv")
 TestData=pd.read_csv(filepath+"cleanedTest.csv")
 
 #decoder = pickle.load( open( filepath+"decoder.pickle", "rb" ) )
-decoder = pickle.load( open( filepath+"tfidfDecoder0.pickle", "rb" ) )
+decoder = pickle.load( open( filepath+"tfidfDecoder.pickle", "rb" ) )
 
 varToClean=["IST_1", "IST_2", "IST_3", "title", "problem", "error"]
 resultTrain=list()
@@ -53,7 +53,7 @@ for train, test in skf:
     testY=Y[test]
 
     #fit model
-    clf = RandomForestClassifier(n_estimators=500, n_jobs=7)
+    clf = RandomForestClassifier(n_estimators=500, n_jobs=-1)
     clf = clf.fit(trainX, trainY)
     predictedY=clf.predict(testX)
     
@@ -68,19 +68,3 @@ print(estimatedError)
 
 
 
-
-
-#SimpleModel
-clf = RandomForestClassifier(n_estimators=1000, n_jobs=-1)
-clf = clf.fit(X, Y)
-
-result=clf.predict(Xtest)
-
-#convert response back to original format
-RESULT=np.array(map(splitResult, result.tolist()))    
-#add SRId column
-RESULT=np.column_stack((np.array(TestData.SRId), RESULT))
-#add column name
-RESULT=np.row_stack((np.array(["SRId", "CST_1_Pred", "CST_2_Pred"]), RESULT))
-
-np.savetxt("C:/Users/vichan/Desktop/RESULT0.txt", RESULT, fmt='%s', delimiter='\t')
