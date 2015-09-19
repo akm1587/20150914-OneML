@@ -16,14 +16,19 @@ def splitResult(x):
     return(x.split("::$!^!$::"))
 
 
+#filepath="/Users/vc/Dropbox/Documents/Microsoft/20150914-OneML/"
+filepath="C:/Users/vichan/Dropbox/Documents/Microsoft/20150914-OneML/"
 
-filepath="/Users/vc/Dropbox/Documents/Microsoft/20150914-OneML/Information/"
-#filepath="C:/Users/vichan/Dropbox/Documents/Microsoft/20150914-OneML/Information/"
-TrainData=pd.read_csv(filepath+"cleanedTrain.csv")
-TestData=pd.read_csv(filepath+"cleanedTest.csv")
 
-#decoder = pickle.load( open( filepath+"decoder.pickle", "rb" ) )
-decoder = pickle.load( open( filepath+"tfidfDecoder.pickle", "rb" ) )
+
+
+
+filepath1=filepath+"Information/"
+TrainData=pd.read_csv(filepath1+"cleanedTrain.csv")
+TestData=pd.read_csv(filepath1+"cleanedTest.csv")
+
+#decoder = pickle.load( open( filepath1+"decoder.pickle", "rb" ) )
+decoder = pickle.load( open( filepath1+"tfidfDecoder.pickle", "rb" ) )
 
 varToClean=["IST_1", "IST_2", "IST_3", "title", "problem", "error"]
 resultTrain=list()
@@ -42,13 +47,13 @@ Xtest=hstack(resultTest).toarray()
 CST_1=TrainData.CST_1
 CST_2=TrainData.CST_2
 
-nfold=3
+nfold=5
 import sys
-sys.path.insert(0, '/Users/vc/Dropbox/Documents/Microsoft/20150914-OneML')
+sys.path.insert(0, filepath)
 import hierarchicalModel as myfunc
 from sklearn.cross_validation import StratifiedKFold
 estimatedError=list()
-skf = StratifiedKFold(TrainData.Y, nfold)
+skf = StratifiedKFold(TrainData.Y, nfold, random_state=9876543)
 for train, test in skf:
     trainX=X[train,:]
     trainCST_1=CST_1[train]
@@ -56,13 +61,10 @@ for train, test in skf:
     testX=X[test,:]
     testY=TrainData.Y[test]
     
-    print(sp.stats.itemfreq(TrainData.Y[train]))
-    print(sp.stats.itemfreq(trainCST_2))
     #fit model
     clf = myfunc.hierarchicalModel()
     clf.fit(trainX, trainCST_1, trainCST_2)
     predictedY0 = clf.predict(testX)
-    print(predictedY0)
     predictedY = predictedY0[0]+"::$!^!$::"+predictedY0[1]
     
     #test model
