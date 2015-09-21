@@ -71,7 +71,7 @@ for train, test in skf:
     #test model
         error=np.mean(testY==predictedY)*100
         temp.append(error)
-    estimatedError[0]=temp
+    estimatedError[counter]=temp
     counter+=1
     print("one fold done")
 

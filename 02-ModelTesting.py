@@ -16,8 +16,8 @@ def splitResult(x):
     return(x.split("::$!^!$::"))
 
 
-#filepath="/Users/vc/Dropbox/Documents/Microsoft/20150914-OneML/"
-filepath="C:/Users/vichan/Dropbox/Documents/Microsoft/20150914-OneML/"
+filepath="/Users/vc/Dropbox/Documents/Microsoft/20150914-OneML/"
+#filepath="C:/Users/vichan/Dropbox/Documents/Microsoft/20150914-OneML/"
 
 
 
@@ -44,16 +44,19 @@ for i in range(0, len(varToClean)):
 from scipy.sparse import hstack
 X=hstack(resultTrain).toarray()
 Xtest=hstack(resultTest).toarray()
-CST_1=TrainData.CST_1
-CST_2=TrainData.CST_2
+CST_1=np.array(TrainData.CST_1.tolist())
+CST_2=np.array(TrainData.CST_2.tolist())
+
+import scipy as sp
 
 nfold=5
 import sys
 sys.path.insert(0, filepath)
 import hierarchicalModel as myfunc
 from sklearn.cross_validation import StratifiedKFold
-estimatedError=list()
-skf = StratifiedKFold(TrainData.Y, nfold, random_state=9876543)
+estimatedError1=list()
+estimatedError2=list()
+skf = StratifiedKFold(y=TrainData.Y, n_folds=nfold, random_state=987654)
 for train, test in skf:
     trainX=X[train,:]
     trainCST_1=CST_1[train]
@@ -64,12 +67,14 @@ for train, test in skf:
     #fit model
     clf = myfunc.hierarchicalModel()
     clf.fit(trainX, trainCST_1, trainCST_2)
-    predictedY0 = clf.predict(testX)
-    predictedY = predictedY0[0]+"::$!^!$::"+predictedY0[1]
+    CST_1_Pred, CST_2_Pred = clf.predict(testX)
+    predictedY = np.array(['%s::$!^!$::%s' % t for t in zip(CST_1_Pred.tolist(), CST_2_Pred.tolist())])
     
     #test model
-    error=np.mean(testY==predictedY)*100
-    estimatedError.append(error)
+    error1=np.mean(CST_1[test]==np.array(CST_1_Pred))*100
+    error2=np.mean(testY==predictedY)*100
+    estimatedError1.append(error1)
+    estimatedError2.append(error2)
     print("one fold done")
 
 

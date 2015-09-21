@@ -3,10 +3,12 @@ import pandas as pd
 import pickle
 from sklearn import linear_model 
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.cross_validation import StratifiedKFold
+import scipy as sp
 
 
-#filepath="/Users/vc/Dropbox/Documents/Microsoft/20150914-OneML/Information/"
-filepath="C:/Users/vichan/Dropbox/Documents/Microsoft/20150914-OneML/Information/"
+filepath="/Users/vc/Dropbox/Documents/Microsoft/20150914-OneML/Information/"
+#filepath="C:/Users/vichan/Dropbox/Documents/Microsoft/20150914-OneML/Information/"
 
 # RawData=pd.read_csv(filepath+"TrainingData.tsv", sep='\t')
 # hierarchy={}
@@ -28,8 +30,9 @@ class hierarchicalModel:
         #fit classification model on CST_1
         #model here needs to have .fit method and .predict method
         #model = linear_model.LogisticRegression() 
-        model = RandomForestClassifier(random_state=123456, n_estimators=500, n_jobs=-1) 
-        print('start fitting main model')
+        #model = RandomForestClassifier(random_state=123456, n_estimators=500, n_jobs=-1) 
+        model = CVmodel(10.**np.arange(-1.5, 1.5, 0.25), 5) 
+        print('start fitting CST_1 level model')
         model.fit(X, Y1)
         self.result['main']=model
 
@@ -40,11 +43,12 @@ class hierarchicalModel:
             whichRows=np.where(Y1==cst1)[0]
             #this is current data
             currentX=X[whichRows,]
-            currentY=Y2.ix[Y1==cst1]
+            currentY=Y2[Y1==cst1]
 
             #fit submodel
             #modelTemp = linear_model.LogisticRegression()
-            modelTemp = RandomForestClassifier(random_state=123456, n_estimators=500, n_jobs=-1)
+            #modelTemp = RandomForestClassifier(random_state=123456, n_estimators=500, n_jobs=-1)
+            modelTemp = CVmodel(10.**np.arange(-1.5, 1.5, 0.25), 5) 
             modelTemp.fit(currentX, currentY)
             self.result[cst1]=modelTemp
         print('model fit completed')
@@ -65,3 +69,49 @@ class hierarchicalModel:
         return([CST_1_Pred, CST_2_Pred])
 
 
+
+
+class CVmodel:
+    def __init__(self, candidate, nfold=5):
+        self.candidate=candidate
+        self.nfold=nfold
+
+    def fit(self, X, Y):
+        estimatedError=np.empty((self.nfold, self.candidate.size))
+        skf = StratifiedKFold(y=Y, n_folds=self.nfold, random_state=13579)
+        counter=0
+        for train, test in skf:
+            trainX=X[train,:]
+            trainY=Y[train]
+            testX=X[test,:]
+            testY=Y[test]
+
+            temp=list()
+            for i in range(0, self.candidate.size):
+                #fit model
+                logreg = linear_model.LogisticRegression(C=self.candidate[i]) 
+                logreg = logreg.fit(trainX, trainY)
+                predictedY=logreg.predict(testX)
+                #    clf = RandomForestClassifier(n_estimators=500, n_jobs=7)
+                #    clf = clf.fit(trainX, trainY)
+                #    predictedY=clf.predict(testX)
+
+                #test model
+                error=np.mean(testY==predictedY)*100
+                temp.append(error)
+            estimatedError[counter]=temp
+            counter+=1
+            print("one fold done")
+        self.CVresults=estimatedError
+
+        #FINISH THIS PART
+        accuracy=estimatedError.mean(axis=0)
+        print(accuracy)
+        self.optimalparameter=self.candidate[accuracy==max(accuracy)]
+        print('CV completed')
+
+        self.model = linear_model.LogisticRegression(C=self.optimalparameter) 
+        self.model.fit(X, Y)
+
+    def predict(self, X):
+        return(self.model.predict(X))
